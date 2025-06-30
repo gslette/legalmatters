@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LegalMattersAPI.models
+namespace LegalMattersAPI.Models
 {
     public class User
     {
@@ -11,6 +8,7 @@ namespace LegalMattersAPI.models
         public int LawFirmId { get; set; }
         public required string Username { get; set; }
         public required string Email { get; set; }
+        [NotMapped]
         public string Password { get; set; }
         public required string PasswordHash { get; set; }
     }

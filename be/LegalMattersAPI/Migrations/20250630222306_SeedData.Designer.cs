@@ -2,6 +2,7 @@
 using LegalMattersAPI.db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LegalMattersAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250630222306_SeedData")]
+    partial class SeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,7 +24,7 @@ namespace LegalMattersAPI.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("LegalMattersAPI.models.Customer", b =>
+            modelBuilder.Entity("LegalMattersAPI.Models.Customer", b =>
                 {
                     b.Property<int>("CustomerId")
                         .ValueGeneratedOnAdd()
@@ -42,7 +45,7 @@ namespace LegalMattersAPI.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("LegalMattersAPI.models.LawFirm", b =>
+            modelBuilder.Entity("LegalMattersAPI.Models.LawFirm", b =>
                 {
                     b.Property<int>("LawFirmId")
                         .ValueGeneratedOnAdd()
@@ -82,7 +85,7 @@ namespace LegalMattersAPI.Migrations
                     b.ToTable("LawFirms");
                 });
 
-            modelBuilder.Entity("LegalMattersAPI.models.Matter", b =>
+            modelBuilder.Entity("LegalMattersAPI.Models.Matter", b =>
                 {
                     b.Property<int>("MatterId")
                         .ValueGeneratedOnAdd()
@@ -106,7 +109,7 @@ namespace LegalMattersAPI.Migrations
                     b.ToTable("Matters");
                 });
 
-            modelBuilder.Entity("LegalMattersAPI.models.User", b =>
+            modelBuilder.Entity("LegalMattersAPI.Models.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()

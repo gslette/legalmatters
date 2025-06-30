@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LegalMattersAPI.models;
+using LegalMattersAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LegalMattersAPI.db
@@ -12,5 +12,6 @@ namespace LegalMattersAPI.db
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Customer> Customers { get; set; } = null!;
         public DbSet<Matter> Matters { get; set; } = null!;
+        public DbSet<LawFirm> LawFirms { get; set; } = null!;
     }
 }

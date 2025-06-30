@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using LegalMattersAPI.db;
-using LegalMattersAPI.models;
-using Microsoft.AspNetCore.Identity.Data;
+using LegalMattersAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using static LegalMattersAPI.Models.AuthModels;
@@ -26,70 +20,65 @@ namespace LegalMattersAPI
 
         public static void BuildApiAuthRoutes(WebApplication app, ApplicationDbContext db)
         {
-            //AUTH ROUTES
-            // app.MapPost("/api/auth/register", async (RegisterRequest request, ApplicationDbContext context, IConfiguration config) =>
-            // {
-            //     if (await context.Users.AnyAsync(u => u.Email == request.Email))
-            //     {
-            //         return Results.BadRequest(new { message = "Email already exists" });
-            //     }
+            // AUTH ROUTES
+            app.MapPost("/api/auth/register", async (Models.AuthModels.SignUpRequest request, ApplicationDbContext context, IConfiguration config) =>
+            {
+                if (await context.Users.AnyAsync(u => u.Email == request.Email))
+                {
+                    return Results.BadRequest(new { message = "Email already exists" });
+                }
 
-            //     var user = new User
-            //     {
-            //         //UserId = Guid.NewGuid(),
-            //         //Username = request.Name,
-            //         Email = request.Email,
-            //         PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
-            //     };
+                var user = new User
+                {
+                    Username = request.Name,
+                    Email = request.Email,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
+                };
 
-            //     context.Users.Add(user);
-            //     await context.SaveChangesAsync();
+                context.Users.Add(user);
+                await context.SaveChangesAsync();
 
-            //     var token = GenerateJwtToken(user, config);
+                var token = GenerateJwtToken(user, config);
 
-            //     return Results.Ok(new AuthResponse
-            //     {
-            //         Token = token,
-            //         User = new UserDto
-            //         {
-            //             UserId = user.UserId.ToString(),
-            //             Email = user.Email,
-            //             Username = user.Username
-            //         }
-            //     });
-            // }).WithName("CreateUser");
+                var response = new AuthResponse(token, new UserDto
+                {
+                    UserId = user.UserId,
+                    Email = user.Email,
+                    Username = user.Username
+                });
 
-            // app.MapPost("/api/auth/login", async (LoginRequest request, ApplicationDbContext context, IConfiguration config) =>
-            // {
-            //     var user = await context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+                return Results.Ok(response);
+            }).WithName("CreateUser");
 
-            //     if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-            //     {
-            //         return Results.Unauthorized();
-            //     }
+            app.MapPost("/api/auth/login", async (Models.AuthModels.LoginRequest request, ApplicationDbContext context, IConfiguration config) =>
+            {
+                var user = await context.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
 
-            //     var token = GenerateJwtToken(user, config);
+                if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+                {
+                    return Results.Unauthorized();
+                }
 
-            //     return Results.Ok(new AuthResponse
-            //     {
-            //         Token = token,
-            //         User = new UserDto
-            //         {
-            //             UserId = user.UserId.ToString(),
-            //             Email = user.Email,
-            //             Username = user.Username
-            //         }
-            //     });
-            // }).WithName("UserLogin");
+                var token = GenerateJwtToken(user, config);
 
-            // app.MapGet("/api/auth/me", () =>
-            // {
+                var response = new AuthResponse(token, new UserDto
+                {
+                    UserId = user.UserId,
+                    Email = user.Email,
+                    Username = user.Username
+                });
 
-            // }).WithName("UserInfo");
+                return Results.Ok(response);
+            }).WithName("UserLogin");
+
+            app.MapGet("/api/auth/me", () =>
+            {
+                return Results.Ok("User info endpoint - not implemented");
+            }).WithName("UserInfo");
         }
         public static void BuildApiCustomerRoutes(WebApplication app, ApplicationDbContext db)
         {
-            //CUSTOMER ROUTES
+            // CUSTOMER ROUTES
             app.MapGet("/api/customers", () =>
             {
                 var customers = db.Customers.ToList();
@@ -100,11 +89,6 @@ namespace LegalMattersAPI
 
             app.MapPost("/api/customers", (Customer customer) =>
             {
-                // var customer = new Customer()
-                // {
-                //     Name = customer.Name
-                //     PhoneNumber = customer.
-                // };
 
                 db.Customers.Add(customer);
 
@@ -139,17 +123,12 @@ namespace LegalMattersAPI
                     return Results.Ok(customer);
                 }
 
-                // var customer = db.Customers.Find(x => x.CustomerId == customer_id);
-
-                // db.Customers.Remove(customer);
-
-                // await db.SaveChangesAsync();
 
                 return Results.NoContent();
 
             }).WithName("DeleteCustomer");
 
-            //MATTERS ROUTES
+            // MATTERS ROUTES
             app.MapGet("/api/customers/{customer_id}/matters", (int customer_id) =>
             {
                 var matters = db.Matters.ToList();
@@ -160,12 +139,6 @@ namespace LegalMattersAPI
 
             app.MapPost("/api/customers/{customer_id}/matters", (int customer_id, Matter matter) =>
             {
-                // var matter = new Matter()
-                // {
-                //     CustomerId = customer_id,
-                //     Name = "Test",
-                //     Description = "11111111111"
-                // };
 
                 db.Matters.Add(matter);
 

@@ -15,7 +15,6 @@ export const Login: React.FC<LoginProps> = ({ onAuthSuccess }) => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoginError('');
     
     try {
       const authResponse = await apiService.login(email, password);
@@ -31,12 +30,12 @@ export const Login: React.FC<LoginProps> = ({ onAuthSuccess }) => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSignupError('');
     
     try {
       await apiService.register(email, password, signupName);
       const authResponse = await apiService.login(email, password);
       console.log('Registration and login successful:', authResponse.user);
+      setSignupError('');
       onAuthSuccess();
       setEmail('');
       setPassword('');
@@ -50,9 +49,11 @@ export const Login: React.FC<LoginProps> = ({ onAuthSuccess }) => {
   return (
     <div className="login-container">
       <form onSubmit={isSignup ? handleSignup : handleLogin} className="login-form">
-        <h2>{isSignup ? 'Sign Up' : 'Login'}</h2>
-        {loginError && <div className="error">{loginError}</div>}
-        {signupError && <div className="error">{signupError}</div>}
+        <h1 className="text-red-500 text-3xl">Legal Matters</h1>
+        <br/>
+        <h2 className="text-red-500 font-bold text-2xl">{isSignup ? 'Sign Up' : 'Login'}</h2>
+        {!isSignup && loginError && <div className="error">{loginError}</div>}
+        {isSignup && signupError && <div className="error">{signupError}</div>}
         
         {isSignup && (
           <div className="form-group">
@@ -68,7 +69,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthSuccess }) => {
         )}
         
         <div className="form-group">
-          <label htmlFor="email">Email:</label>
+          <label htmlFor="email">Email</label>
           <input
             type="email"
             id="email"
@@ -79,7 +80,7 @@ export const Login: React.FC<LoginProps> = ({ onAuthSuccess }) => {
         </div>
         
         <div className="form-group">
-          <label htmlFor="password">Password:</label>
+          <label htmlFor="password">Password</label>
           <input
             type="password"
             id="password"
@@ -96,7 +97,11 @@ export const Login: React.FC<LoginProps> = ({ onAuthSuccess }) => {
         <div className="mt-4 text-center">
           <button 
             type="button"
-            onClick={() => setIsSignup(!isSignup)}
+            onClick={() => {
+              setIsSignup(!isSignup);
+              setLoginError('');
+              setSignupError('');
+            }}
             className="text-blue-600 hover:text-blue-700 underline"
           >
             {isSignup ? 'Already have an account? Login' : "Don't have an account? Sign up"}
