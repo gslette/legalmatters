@@ -59,7 +59,7 @@ The backend API will be available at `http://localhost:5001`
 
 The frontend will be available at `http://localhost:5173`. 
 
-You will not have a user account created to begin with. The app is configured to redirect you to the login page via axios at runtime. Click the sign up button on the bottom of the login form to switch to the sign up form and create a user. You can then use those same credentials to sign and access the dashboard.
+You will not have a user account created to begin with. The app is configured to redirect you to the login page via axios at runtime. Click the sign up button on the bottom of the login form to switch to the sign up form and create a user. You can then use those same credentials to login and access the dashboard.
 
 ## Technology Stack
 
