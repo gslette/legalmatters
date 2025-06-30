@@ -9,7 +9,7 @@ class ApiService {
 
   constructor() {
     this.api = axios.create({
-      baseURL: 'https://localhost:5001/api', // Your .NET API URL
+      baseURL: 'http://localhost:5001/api', // Your .NET API URL
       headers: {
         'Content-Type': 'application/json',
       },
@@ -53,13 +53,24 @@ class ApiService {
     return response.data;
   }
 
+  async getUserInfo(): Promise<User> {
+    const response = await this.api.get('/auth/me');
+    return response.data;
+  }
+
   logout(): void {
     localStorage.removeItem('authToken');
   }
 
   // Protected API calls
+  // Get Methods
   async getCustomers(): Promise<Customer[]> {
     const response = await this.api.get('/customers');
+    return response.data;
+  }
+
+  async getCustomerMatters(customerId: number): Promise<Matter[]> {
+    const response = await this.api.get(`/customers/${customerId}/matters`);
     return response.data;
   }
 
@@ -68,10 +79,15 @@ class ApiService {
     return response.data;
   }
 
-  async getUsers(): Promise<User[]> {
-    const response = await this.api.get('/users');
+  async getMattersByCustomer(customerId: number): Promise<Matter[]> {
+    const response = await this.api.get(`/customers/${customerId}/matters`);
     return response.data;
   }
+
+  // async getUsers(): Promise<User[]> {
+  //   const response = await this.api.get('/users');
+  //   return response.data;
+  // }
 
   // Search methods
   async searchCustomers(query: string): Promise<Customer[]> {
@@ -79,13 +95,8 @@ class ApiService {
     return response.data;
   }
 
-  async searchMatters(query: string): Promise<Matter[]> {
-    const response = await this.api.get(`/matters/search?q=${encodeURIComponent(query)}`);
-    return response.data;
-  }
-
-  async getMattersByCustomer(customerId: number): Promise<Matter[]> {
-    const response = await this.api.get(`/customers/${customerId}/matters`);
+  async searchMattersByCustomer(customerId: number, query: string): Promise<Matter[]> {
+    const response = await this.api.get(`/customers/${customerId}/matters/search?q=${encodeURIComponent(query)}`);
     return response.data;
   }
 
@@ -95,8 +106,8 @@ class ApiService {
     return response.data;
   }
 
-  async addMatter(matter: { name: string; description: string; customerId: number }): Promise<Matter> {
-    const response = await this.api.post('/matters', matter);
+  async addMatter(customerId: number, matter: { name: string; description: string; customerId: number }): Promise<Matter> {
+    const response = await this.api.post(`/customers/${customerId}/matters`, matter);
     return response.data;
   }
 }

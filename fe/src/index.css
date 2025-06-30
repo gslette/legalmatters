@@ -30,7 +30,7 @@
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #555;
+  /* color: #555; */
   font-weight: 500;
 }
 
@@ -102,12 +102,6 @@
   flex: 1;
 }
 
-.content-section {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-}
-
 .customers-section,
 .matters-section {
   background: #f9f9f9;
@@ -119,7 +113,7 @@
 .matters-section h2 {
   margin-top: 0;
   margin-bottom: 1rem;
-  color: #333;
+  /* color: #333; */
 }
 
 .customers-list,
@@ -134,19 +128,19 @@
   background: white;
   padding: 1rem;
   border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .customer-item:hover {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
   transform: translateY(-1px);
 }
 
 .customer-item.selected {
-  border: 2px solid #646cff;
-  background-color: #f0f4ff;
+  border: 2px solid #dc2626;
+  background-color: #fef2f2;
 }
 
 .customer-item h3,

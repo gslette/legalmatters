@@ -2,6 +2,7 @@ using System.Text;
 using LegalMattersAPI;
 using LegalMattersAPI.db;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Routing.Matching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -11,6 +12,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+                      policy  =>
+                      {
+                          policy.AllowAnyOrigin();
+                          policy.AllowAnyHeader();
+                          policy.AllowAnyOrigin();
+                        //   policy.WithOrigins("http://localhost:5173", "http://localhost:5001");
+                      });
+});
+
 
 var app = builder.Build();
 
@@ -43,6 +56,8 @@ var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 ApiRouteBuilder.BuildApiAuthRoutes(app, db);
 ApiRouteBuilder.BuildApiCustomerRoutes(app, db);
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+
+app.UseCors("AllowAllOrigins");
 
 app.Run();

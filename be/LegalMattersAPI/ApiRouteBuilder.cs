@@ -92,21 +92,23 @@ namespace LegalMattersAPI
             //CUSTOMER ROUTES
             app.MapGet("/api/customers", () =>
             {
-                return db.Customers.Any();
+                var customers = db.Customers.ToList();
+
+                return customers;
 
             }).WithName("GetCustomers");
 
-            app.MapPost("/api/customers", async () =>
+            app.MapPost("/api/customers", (Customer customer) =>
             {
-                var customer = new Customer()
-                {
-                    Name = "Test",
-                    PhoneNumber = "11111111111"
-                };
+                // var customer = new Customer()
+                // {
+                //     Name = customer.Name
+                //     PhoneNumber = customer.
+                // };
 
                 db.Customers.Add(customer);
 
-                await db.SaveChangesAsync();
+                db.SaveChanges();
 
                 return Results.Created($"/api/customers/{customer.CustomerId}", customer);
 
@@ -118,37 +120,66 @@ namespace LegalMattersAPI
 
             }).WithName("GetCustomer");
 
-            app.MapPut("/api/customers/{customer_id}", async (int customer_id, Customer customer) =>
+            app.MapPut("/api/customers/{customer_id}", (int customer_id, Customer customer) =>
             {
                 db.Customers.Update(customer);
 
-                await db.SaveChangesAsync();
+                db.SaveChanges();
 
                 return Results.Ok();
 
             }).WithName("UpdateCustomer");
 
-            app.MapDelete("/api/customers", async (int customer_id) =>
+            app.MapDelete("/api/customers/{customer_id}", (int customer_id) =>
             {
-                // if (await db.Customers.FindAsync(customer_id) is Customer customer)
-                // {
-                //     db.Customers.Remove(customer);
-                //     await db.SaveChangesAsync();
-                //     return Results.Ok(new TodoItemDTO(customer));
-                // }
+                if (db.Customers.Find(customer_id) is Customer customer)
+                {
+                    db.Customers.Remove(customer);
+                    db.SaveChanges();
+                    return Results.Ok(customer);
+                }
 
-                var customer = db.Customers.First(x => x.CustomerId == customer_id);
+                // var customer = db.Customers.Find(x => x.CustomerId == customer_id);
 
-                db.Customers.Remove(customer);
+                // db.Customers.Remove(customer);
 
-                await db.SaveChangesAsync();
+                // await db.SaveChangesAsync();
 
                 return Results.NoContent();
 
             }).WithName("DeleteCustomer");
 
             //MATTERS ROUTES
+            app.MapGet("/api/customers/{customer_id}/matters", (int customer_id) =>
+            {
+                var matters = db.Matters.ToList();
 
+                return matters;
+
+            }).WithName("GetCustomerMatters");
+
+            app.MapPost("/api/customers/{customer_id}/matters", (int customer_id, Matter matter) =>
+            {
+                // var matter = new Matter()
+                // {
+                //     CustomerId = customer_id,
+                //     Name = "Test",
+                //     Description = "11111111111"
+                // };
+
+                db.Matters.Add(matter);
+
+                db.SaveChanges();
+
+                return Results.Created($"/api/customers/{customer_id}/matters", matter);
+
+            }).WithName("CreateMatter");
+
+            app.MapGet("/api/customers/{customer_id}/matters/matter_id", (int customer_id, int matter_id) =>
+            {
+                return db.Matters.First(x => x.CustomerId == customer_id && x.MatterId == matter_id);
+
+            }).WithName("GetCustomerMatterDetails");
 
         }
         
