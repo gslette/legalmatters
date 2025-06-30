@@ -88,6 +88,17 @@ class ApiService {
     const response = await this.api.get(`/customers/${customerId}/matters`);
     return response.data;
   }
+
+  // Create methods
+  async addCustomer(customer: { name: string; phoneNumber: string }): Promise<Customer> {
+    const response = await this.api.post('/customers', customer);
+    return response.data;
+  }
+
+  async addMatter(matter: { name: string; description: string; customerId: number }): Promise<Matter> {
+    const response = await this.api.post('/matters', matter);
+    return response.data;
+  }
 }
 
 export const apiService = new ApiService();
